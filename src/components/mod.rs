@@ -9,18 +9,20 @@ pub struct Health
     pub max : i32,
 }
 
+#[derive(Debug, Clone, Copy)]
 pub struct Renderable
 {
     pub glyph : FontCharType,
     pub fg : RGB,
     pub bg : RGB,
+    pub order : i32,
 }
 
 impl Renderable
 {
-    pub fn new(glyph : FontCharType, fg : RGB, bg : RGB) -> Renderable
+    pub fn new(glyph : FontCharType, fg : RGB, bg : RGB, order : i32) -> Renderable
     {
-        Renderable { glyph, fg, bg }
+        Renderable { glyph, fg, bg, order }
     }
 }
 
@@ -60,6 +62,7 @@ impl Description
     }
 }
 
+#[derive(Debug, Clone, Copy)]
 pub struct Position
 {
     pub pos : Point,

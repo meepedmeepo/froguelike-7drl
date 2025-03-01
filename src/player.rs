@@ -15,7 +15,7 @@ pub fn spawn_player(state : &mut State, pos : Point)
         Player, Name::new("Jelly"),
         Description::new("This is you! Stop looking at yourself and go eat bugs!"),
         Score{value : 0},
-        Renderable::new(to_cp437('f'), GREEN.into(), BLACK.into()),
-        Position::from_point(pos)
+        Renderable::new(to_cp437('f'), GREEN.into(), BLACK.into(), 3),
+        Position::from_point(pos),
         ));
 }

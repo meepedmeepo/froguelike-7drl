@@ -1,5 +1,5 @@
 use bracket_lib::prelude::*;
-use froguelike::gamestate::State;
+use froguelike::{gamestate::State, map::Map, player::spawn_player};
 
 
 embedded_resource!(DBYTE_FONT, "../resources/dinobyte_12x16.png");
@@ -23,6 +23,7 @@ fn main() -> BError
 
    // term.set_active_font(0, true);
 
-    let gs = State{world : hecs::World::new()};
+    let mut gs = State::new();
+    spawn_player(&mut gs, (20,20).into());
     main_loop(term, gs)
 }

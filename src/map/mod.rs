@@ -1,9 +1,15 @@
-use bracket_lib::prelude::{BaseMap, DistanceAlg, Point, SmallVec};
+mod cellular_automata;
+
+
+use bracket_lib::{color::{BLACK, GREEN, WHITE}, prelude::{to_cp437, BaseMap, DistanceAlg, DrawBatch, Point, SmallVec}};
 use hecs::Entity;
+
+use crate::components::Renderable;
 
 
 pub const MAPWIDTH : i32 = 65;
 pub const MAPHEIGHT : i32 = 30;
+pub const MAPSIZE : usize = MAPWIDTH as usize * MAPHEIGHT as usize;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum TileType
@@ -11,6 +17,19 @@ pub enum TileType
     Wall, Ground
 }
 
+impl TileType 
+{
+    pub fn as_renderable(&self) -> Renderable
+    {
+        match self
+        {
+            TileType::Wall => Renderable::new(to_cp437('#'), WHITE.into(), BLACK.into(), 1),
+            TileType::Ground => Renderable::new(to_cp437('.'),  GREEN.into(), BLACK.into(),1)
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
 pub struct Map
 {
     pub tiles : Vec<TileType>,
@@ -23,9 +42,26 @@ pub struct Map
 
 impl Map
 {
+    pub fn new() -> Map
+    {
+        Map
+        {
+            tiles : vec![TileType::Wall; MAPSIZE],
+            blocked : vec![false; MAPSIZE],
+            tile_contents : vec![Vec::new(); MAPSIZE],
+            visible_tiles : vec![true; MAPSIZE],
+            known_tiles : vec![false; MAPSIZE],
+        }
+    }
+
     pub fn xy_idx(&self, x : i32, y : i32) -> usize
     {
         (y as usize * MAPWIDTH as usize) + x as usize
+    }
+
+    pub fn pos_from_idx(&self, idx : usize) -> Point
+    {
+        Point::new(idx as i32 % MAPWIDTH , idx as i32/ MAPWIDTH)
     }
 
     pub fn is_exit_valid(&self, x : i32, y : i32) -> bool
@@ -34,6 +70,20 @@ impl Map
 
         let idx = self.xy_idx(x, y);
         !self.blocked[idx]
+    }
+
+    pub fn get_tile_glyphs(&self) -> Vec<Renderable>
+    {
+        self.tiles.iter().map(|tile| {
+            tile.as_renderable()
+        }).collect()
+    }
+
+    pub fn is_visible(&self, pos : Point) -> bool
+    {
+        let idx = self.xy_idx(pos.x, pos.y);
+
+        self.visible_tiles[idx]
     }
 }
 
