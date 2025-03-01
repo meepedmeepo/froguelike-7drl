@@ -1,0 +1,8 @@
+[package]
+name = "froguelike"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+bracket-lib = { git = "https://github.com/amethyst/bracket-lib.git", rev = "851f6f08675444fb6fa088b9e67bee9fd75554c6"}
+hecs = "0.10.5"
