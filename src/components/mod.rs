@@ -80,3 +80,16 @@ impl Position
         Position { pos }
     }
 }
+
+pub struct BlocksTile;
+
+
+pub struct Enemy;
+
+
+pub struct DropsFood
+{
+    pub value : i32,
+}
+
+pub struct Creature;

@@ -4,7 +4,7 @@ mod cellular_automata;
 use bracket_lib::{color::{BLACK, GREEN, WHITE}, prelude::{to_cp437, BaseMap, DistanceAlg, DrawBatch, Point, SmallVec}};
 use hecs::Entity;
 
-use crate::components::Renderable;
+use crate::{components::Renderable, gamestate::State};
 
 
 pub const MAPWIDTH : i32 = 65;
@@ -14,7 +14,7 @@ pub const MAPSIZE : usize = MAPWIDTH as usize * MAPHEIGHT as usize;
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum TileType
 {
-    Wall, Ground
+    Wall, Floor
 }
 
 impl TileType 
@@ -24,7 +24,7 @@ impl TileType
         match self
         {
             TileType::Wall => Renderable::new(to_cp437('#'), WHITE.into(), BLACK.into(), 1),
-            TileType::Ground => Renderable::new(to_cp437('.'),  GREEN.into(), BLACK.into(),1)
+            TileType::Floor => Renderable::new(to_cp437('.'),  GREEN.into(), BLACK.into(),1)
         }
     }
 }
@@ -85,6 +85,19 @@ impl Map
 
         self.visible_tiles[idx]
     }
+
+    pub fn populate_blocked(&mut self)
+    {
+        for (i, tile) in self.tiles.iter().enumerate()
+        {
+            self.blocked[i] = self.is_opaque(i);
+        } 
+    }
+
+    pub fn get_entites_at_tile(&self, idx : usize) -> Vec<Entity>
+    {
+        self.tile_contents[idx].clone()
+    }
 }
 
 impl BaseMap for Map
@@ -134,4 +147,9 @@ impl BaseMap for Map
         }    
     }
 
+}
+
+pub fn build_map(state : &mut State)
+{
+    cellular_automata::cellular_automata(state);
 }

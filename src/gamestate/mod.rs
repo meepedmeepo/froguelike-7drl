@@ -1,7 +1,7 @@
-use bracket_lib::prelude::GameState;
+use bracket_lib::prelude::{GameState, Point};
 use hecs::Entity;
 
-use crate::{map::Map, systems::render::render_system};
+use crate::{components::Creature, map::Map, systems::render::render_system};
 
 
 pub struct State
@@ -9,6 +9,7 @@ pub struct State
     pub world : hecs::World,
     pub map : Map,
     player_ent : Option<Entity>,
+    pub player_pos : Point,
 }
 
 impl State
@@ -16,7 +17,28 @@ impl State
     ///* MAKE SURE TO ADD PLAYER_ENT WHEN FUCKING SPAWNED THEM YOU FUCKING NERD WANKER
     pub fn new() -> State
     {
-        State {world : hecs::World::new(), map : Map::new(), player_ent : None,}
+        State {world : hecs::World::new(), map : Map::new(), player_ent : None, player_pos : Point::zero()}
+    }
+
+    pub fn get_player(&self) -> Entity
+    {
+        self.player_ent.unwrap()
+    }
+
+    pub fn get_creatures_at_tile(&self, idx : usize) -> Vec<Entity>
+    {
+        let ents = self.map.get_entites_at_tile(idx);
+
+        ents.iter().filter_map(|e|
+        {
+            if self.world.get::<&Creature>(*e).is_ok()
+            {
+                Some(*e)
+            }
+            else {
+                None
+            }
+        }).collect()
     }
 }
 
