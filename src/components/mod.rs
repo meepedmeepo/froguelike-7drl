@@ -93,3 +93,16 @@ pub struct DropsFood
 }
 
 pub struct Creature;
+
+
+pub struct KeyboardCursor
+{
+    pub pos : Point
+}
+
+pub struct FoV
+{
+    pub visible_tiles : Vec<Point>,
+    pub range : i32,
+    pub dirty : bool,
+}

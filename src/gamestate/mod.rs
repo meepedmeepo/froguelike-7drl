@@ -1,3 +1,7 @@
+mod ticking;
+
+
+pub use ticking::*;
 use bracket_lib::prelude::{GameState, Point};
 use hecs::Entity;
 
@@ -10,6 +14,7 @@ pub struct State
     pub map : Map,
     player_ent : Option<Entity>,
     pub player_pos : Point,
+    pub current_state : ProgramState
 }
 
 impl State
@@ -17,12 +22,21 @@ impl State
     ///* MAKE SURE TO ADD PLAYER_ENT WHEN FUCKING SPAWNED THEM YOU FUCKING NERD WANKER
     pub fn new() -> State
     {
-        State {world : hecs::World::new(), map : Map::new(), player_ent : None, player_pos : Point::zero()}
+        State 
+        {
+            world : hecs::World::new(), map : Map::new(), player_ent : None,
+            player_pos : Point::zero(), current_state : ProgramState::Ticking
+        }
     }
 
     pub fn get_player(&self) -> Entity
     {
         self.player_ent.unwrap()
+    }
+
+    pub fn set_player(&mut self, player : Entity)
+    {
+        self.player_ent = Some(player);
     }
 
     pub fn get_creatures_at_tile(&self, idx : usize) -> Vec<Entity>
@@ -42,18 +56,12 @@ impl State
     }
 }
 
-impl GameState for State
-{
-    fn tick(&mut self, ctx: &mut bracket_lib::prelude::BTerm) 
-    {
-        ctx.cls();
-        render_system(self, ctx);
-    }
-}
+
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ProgramState
 {
     Ticking,
-    AwaitingInput
+    AwaitingInput,
+    Targetting,
 }

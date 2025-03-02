@@ -1,10 +1,10 @@
 mod cellular_automata;
+pub mod indexing;
 
-
-use bracket_lib::{color::{BLACK, GREEN, WHITE}, prelude::{to_cp437, BaseMap, DistanceAlg, DrawBatch, Point, SmallVec}};
+use bracket_lib::{color::{BLACK, GREEN, WHITE}, prelude::{to_cp437, Algorithm2D, BaseMap, DistanceAlg, DrawBatch, Point, SmallVec}};
 use hecs::Entity;
 
-use crate::{components::Renderable, gamestate::State};
+use crate::{components::{Position, Renderable}, gamestate::State};
 
 
 pub const MAPWIDTH : i32 = 65;
@@ -57,6 +57,16 @@ impl Map
     pub fn xy_idx(&self, x : i32, y : i32) -> usize
     {
         (y as usize * MAPWIDTH as usize) + x as usize
+    }
+
+    pub fn pos_to_idx(&self, pos : Position) -> usize
+    {
+        self.xy_idx(pos.pos.x, pos.pos.y)
+    }
+
+    pub fn point_to_idx(&self, pos : Point) -> usize
+    {
+        self.xy_idx(pos.x, pos.y)
     }
 
     pub fn pos_from_idx(&self, idx : usize) -> Point
@@ -147,6 +157,13 @@ impl BaseMap for Map
         }    
     }
 
+}
+
+impl Algorithm2D for Map 
+{
+    fn dimensions(&self) -> Point {
+        (MAPWIDTH, MAPHEIGHT).into()
+    }    
 }
 
 pub fn build_map(state : &mut State)

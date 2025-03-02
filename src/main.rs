@@ -11,7 +11,6 @@ fn main() -> BError
     link_resource!(DBYTE_FONT, "resources/dinobyte_12x16.png");
 
     //bracket_lib::terminal::EMBED.lock().get_resource(path)
-    println!("Hello, world!");
     let mut term = BTermBuilder::new()
         .with_dimensions(80, 50)
         .with_title("FrogueLike")
